@@ -1,0 +1,26 @@
+{
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"tsx": false,
+			"decorators": true
+		},
+		"target": "esnext",
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": [
+				"*"
+			],
+			"@api/*": [
+				"api/*"
+			],
+			"@routes/*": [
+				"api/routes/*"
+			]
+		}
+	},
+	"module": {
+		"type": "es6",
+		"strict": true
+	}
+}
