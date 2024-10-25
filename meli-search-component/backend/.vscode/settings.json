@@ -1,5 +1,0 @@
-{
-  "typescript.tsdk": "node_modules/typescript/lib", // Optional, if VS Code is not using your TS version
-  "typescript.preferences.importModuleSpecifier": "non-relative", // Prefer absolute imports
-  "typescript.preferences.importModuleSpecifierEnding": "minimal" // Controls how imports are completed
-}
