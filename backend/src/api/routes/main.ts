@@ -4,7 +4,8 @@ import axios from 'axios';
 
 const router = express.Router();
 
-router.get('/api/items', async (req, res) => {
+router.get('/items', async (req, res) => {
+  
   const query = req.query.q;
 
   if (!query) {

@@ -4,6 +4,7 @@
 /backend/.env
 /backend/logs
 /backend/tmp
+/backend/build
 
 # Frontend
 /frontend/node_modules
