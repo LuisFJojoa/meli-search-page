@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import axios, { AxiosResponse } from 'axios';
-import { AvailableFilter, AvailableFilterValue, IItemsReponseFromMeliAPI, Result } from '@/core/types/meli/items/main.js';
-import { IItem, IItemsByQueryParamsResponse } from '@/core/types/backend/items/main.js';
-import { IICategoriesReponseFromMeliAPI, IPathFromRoot } from '@/core/types/meli/category/main.js';
+import { AvailableFilter, AvailableFilterValue, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
+import { IItem, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
+import { IICategoriesReponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
 
 export const getAllItems = async (
   req: Request,
