@@ -1,7 +1,3 @@
-export interface IICategoriesReponseFromMeliAPI {
-  category: ICategoryResponseFromMeliAPI;
-}
-
 export interface ICategoryResponseFromMeliAPI {
   id: string;
   name: string;
