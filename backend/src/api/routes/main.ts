@@ -50,6 +50,10 @@ router.get('/items/:id', async (req, res) => {
 
     const itemData = itemResponse.data;
 
+    const descriptionResponse = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
+
+    const descriptionData = descriptionResponse.data;
+
     res.json({
       author: {
         name: 'Tu Nombre',
@@ -66,28 +70,9 @@ router.get('/items/:id', async (req, res) => {
         picture: itemData.pictures[0]?.url,
         condition: itemData.condition,
         free_shipping: itemData.shipping.free_shipping,
-        sold_quantity: itemData.sold_quantity
+        sold_quantity: itemData.sold_quantity,
+        description: descriptionData
       }
-    });
-  } catch (error) {
-    res.status(500).json({ error: error });
-  }
-});
-
-router.get('/items/:id/description', async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const descriptionResponse = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
-
-    const descriptionData = descriptionResponse.data;
-
-    res.json({
-      author: {
-        name: 'Fernando',
-        lastname: 'Jojoa'
-      },
-      description: descriptionData.plain_text
     });
   } catch (error) {
     res.status(500).json({ error: error });
