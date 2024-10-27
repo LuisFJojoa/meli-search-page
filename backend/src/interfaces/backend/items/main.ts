@@ -3,7 +3,7 @@ import { IAuthor } from "../author/main.js";
 export interface IItem {
   id: string;
   title: string;
-  categories: string[];
+  categories?: string[];
   price: {
     currency: string;
     amount: number;

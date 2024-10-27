@@ -1,4 +1,4 @@
-export interface Main {
+export interface IItemsReponseFromMeliAPI {
   site_id: string;
   country_default_time_zone: string;
   query: string;

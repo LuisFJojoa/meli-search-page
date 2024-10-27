@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { IItem, IItemsByQueryParamsResponse } from '@/interfaces/backend/items/main.js';
-import { AvailableFilter, AvailableFilterValue, Result } from '@/interfaces/meli/items/main.js';
+import { AvailableFilter, AvailableFilterValue, IItemsReponseFromMeliAPI, Result } from '@/interfaces/meli/items/main.js';
+import { ICategoryResponseFromMeliAPI, IICategoriesReponseFromMeliAPI, IPathFromRoot } from '@/interfaces/meli/category/main.js';
 
 export const getAllItems = async (
   req: Request,
@@ -16,9 +17,11 @@ export const getAllItems = async (
   }
 
   try {
-    const response = await axios.get(`https://api.mercadolibre.com/sites/MLA/search?q=${query}`);
-    const results = response.data.results.slice(0, 4);
+    const response: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(`https://api.mercadolibre.com/sites/MLA/search?q=${query}`);
+    const results: Result[] = response.data.results.slice(0, 4);
 
+    console.log({results});
+    
     const items: IItem[] = results.map(({ id, title, currency_id, price, thumbnail, condition, shipping }: Result) => ({
       id,
       title,
@@ -30,18 +33,20 @@ export const getAllItems = async (
       picture: thumbnail,
       condition,
       free_shipping: shipping.free_shipping,
+      description: ''
     }));
 
-    const mostCommonCategory = response.data.available_filters
+    const mostCommonCategory: AvailableFilterValue = response.data.available_filters
       .find((filter: AvailableFilter) => filter.id === 'category')?.values
-      .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) => (current.results > prev.results ? current : prev));
+      .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) => (current.results > prev.results ? current : prev)) as AvailableFilterValue;
 
     const mostCommonCategoryId = mostCommonCategory.id;
 
-    const categoryResponse = await axios.get(`https://api.mercadolibre.com/categories/${mostCommonCategoryId}`);
+    const categoryResponse: AxiosResponse<IICategoriesReponseFromMeliAPI> = await axios.get(`https://api.mercadolibre.com/categories/${mostCommonCategoryId}`);
 
-    const categories = categoryResponse.data.path_from_root.map((category: any) => category.name) || [];
-
+    const categories = categoryResponse.data.category.path_from_root.map((category: IPathFromRoot) => category.name) || [];
+    
+  
     const itemsByQueryParams: IItemsByQueryParamsResponse = {
       author: { name: "Fernando", lastName: "Jojoa" },
       categories,
