@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { AvailableFilter, AvailableFilterValue, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
 import { IItem, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
 import { IICategoriesReponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
+import { AUTHOR } from '@/consts/main.js';
 
 export const getAllItems = async (
   req: Request,
@@ -48,7 +49,7 @@ export const getAllItems = async (
     
   
     const itemsByQueryParams: IItemsByQueryParamsResponse = {
-      author: { name: "Fernando", lastName: "Jojoa" },
+      author: AUTHOR,
       categories,
       items
     };
