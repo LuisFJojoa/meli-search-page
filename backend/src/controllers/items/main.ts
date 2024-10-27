@@ -19,7 +19,7 @@ export const getAllItems = async (
   let results: Result[] = [];
   let categories: string[] = [];
   let available_filters: AvailableFilter[];
-  let mostCommonCategory: AvailableFilterValue;
+  let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
 
   try {
     const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
@@ -67,16 +67,12 @@ export const getAllItems = async (
       (category: IPathFromRoot) => category.name
     ) || [];
   } catch (error) {
-    if (error.response) {
-      return res.status(error.response.status).json({ error: 'Error fetching breadcrumb based on categories: ' + (error.response.data.message || 'Unknown error') });
-    } else {
-      return res.status(500).json({ error: 'Error fetching breadcrumb based on categories: An unexpected error occurred' });
-    }
+    console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
   }
 
   const itemsByQueryParams: IItemsByQueryParamsResponse = {
     author: AUTHOR,
-    categories: categories.length === 0 ? categories : [mostCommonCategory.name],
+    categories: categories.length !== 0 ? categories : [mostCommonCategory.name],
     items
   };
 
