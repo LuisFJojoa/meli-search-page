@@ -1,5 +1,6 @@
 import express from 'express';
 import axios from 'axios';
+import { getItemDetails } from '@/controllers/items/main.js';
 
 
 const router = express.Router();
@@ -50,53 +51,31 @@ router.get('/items', async (req, res) => {
 });
 
 
-router.get('/items/:id', async (req, res) => {
+router.get('/items/:id', getItemDetails);
+
+router.get('/categories/:id', async (req, res) => {
   const id = req.params.id;
+
   try {
-    let itemData;
-    try {
-      const itemResponse = await axios.get(`https://api.mercadolibre.com/items/${id}`);
-      itemData = itemResponse.data;
-    } catch (error) {
-      if (error.response) {
-        return res.status(error.response.status).json({ error: 'Error fetching item: ' + (error.response.data.message || 'Unknown error') });
-      } else {
-        return res.status(500).json({ error: 'Error fetching item: An unexpected error occurred' });
-      }
-    }
-
-    let descriptionData;
-    try {
-      const descriptionResponse = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
-      descriptionData = descriptionResponse.data;
-    } catch (error) {
-      if (error.response) {
-        return res.status(error.response.status).json({ error: 'Error fetching item description: ' + (error.response.data.message || 'Unknown error') });
-      } else {
-        return res.status(500).json({ error: 'Error fetching item description: An unexpected error occurred' });
-      }
-    }
-
+    const itemResponse = await axios.get(`https://api.mercadolibre.com/categories/${id}`);
 
     res.json({
-      author: {
-        name: 'Fernando',
-        lastname: 'Jojoa'
-      },
-      item: {
-        id: itemData.id,
-        title: itemData.title,
-        price: {
-          currency: itemData.currency_id,
-          amount: itemData.price,
-          decimals: Math.round((itemData.price % 1) * 100)
-        },
-        picture: itemData.pictures[0]?.url,
-        condition: itemData.condition,
-        free_shipping: itemData.shipping.free_shipping,
-        sold_quantity: itemData.sold_quantity,
-        description: descriptionData
-      }
+      category: itemResponse.data
+    });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+router.get('/items-meli/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const itemResponse = await axios.get(`https://api.mercadolibre.com/items/${id}`);
+
+    const itemData = itemResponse.data;
+
+    res.json({
+      item: itemData
     });
   } catch (error) {
     res.status(500).json({ error: error });
