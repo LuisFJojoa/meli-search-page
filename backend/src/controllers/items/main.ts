@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import axios from 'axios';
+import { IItem, IItemsByQueryParamsResponse } from '@/interfaces/backend/items/main.js';
+import { AvailableFilter, AvailableFilterValue, Result } from '@/interfaces/meli/items/main.js';
 
 export const getAllItems = async (
   req: Request,
@@ -17,22 +19,22 @@ export const getAllItems = async (
     const response = await axios.get(`https://api.mercadolibre.com/sites/MLA/search?q=${query}`);
     const results = response.data.results.slice(0, 4);
 
-    const items = results.map((item: any) => ({
-      id: item.id,
-      title: item.title,
+    const items: IItem[] = results.map(({ id, title, currency_id, price, thumbnail, condition, shipping }: Result) => ({
+      id,
+      title,
       price: {
-        currency: item.currency_id,
-        amount: Math.floor(item.price),
-        decimals: Math.round((item.price % 1) * 100),
+        currency: currency_id,
+        amount: Math.floor(price),
+        decimals: Math.round((price % 1) * 100),
       },
-      picture: item.thumbnail,
-      condition: item.condition,
-      free_shipping: item.shipping.free_shipping,
+      picture: thumbnail,
+      condition,
+      free_shipping: shipping.free_shipping,
     }));
 
     const mostCommonCategory = response.data.available_filters
-      .find((filter: any) => filter.id === 'category')?.values
-      .reduce((prev: any, current: any) => (current.results > prev.results ? current : prev));
+      .find((filter: AvailableFilter) => filter.id === 'category')?.values
+      .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) => (current.results > prev.results ? current : prev));
 
     const mostCommonCategoryId = mostCommonCategory.id;
 
@@ -40,10 +42,14 @@ export const getAllItems = async (
 
     const categories = categoryResponse.data.path_from_root.map((category: any) => category.name) || [];
 
-    res.json({
+    const itemsByQueryParams: IItemsByQueryParamsResponse = {
       author: { name: "Fernando", lastName: "Jojoa" },
-      categories: categories,
-      items,
+      categories,
+      items
+    };
+
+    res.json({
+      data: itemsByQueryParams
     });
   } catch (error) {
     next(error);
