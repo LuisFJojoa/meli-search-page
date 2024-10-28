@@ -105,7 +105,7 @@ export const getItemDetails = async (
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const status = error.response?.status || 500;
-        return next(new CustomError("Error fetching item description based on id from external Meli API", status, "EXTERNAL_API_ERROR"));
+        return next(new CustomError("Error fetching item descriptionbased on id from external Meli API", status, "EXTERNAL_API_ERROR"));
       } else if (error instanceof Error) {
         return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
       } else {
