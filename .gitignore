@@ -1,5 +1,4 @@
 # backend
-/node_modules
 /backend/node_modules
 /backend/.env
 /backend/logs
@@ -9,11 +8,13 @@
 # Frontend
 /frontend/node_modules
 /frontend/build
+/frontend/dist
 /frontend/.env.local
 /frontend/.env.development.local
 /frontend/.env.test.local
 /frontend/.env.production.local
 /frontend/.cache
+
 
 # OS generated files
 .DS_Store
@@ -21,8 +22,4 @@ Thumbs.db
 
 ### VisualStudioCode ###
 /backend/.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+/frontend/.vscode/*
