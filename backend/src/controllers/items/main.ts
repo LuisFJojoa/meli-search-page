@@ -5,6 +5,7 @@ import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQu
 import { ICategoryResponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
 import { AUTHOR } from '@/consts/main.js';
 import { mapItemFromMeliApiToItem, mapItemsFromMeliApiToItem } from '@/utils/main.js';
+import { CustomError } from '@/errors/customError.js';
 
 export const getAllItems = async (
   req: Request,
@@ -31,10 +32,13 @@ export const getAllItems = async (
       results = itemsResponse.data.results.slice(0, 4);
       available_filters = itemsResponse.data.available_filters;
     } catch (error) {
-      if (error.response) {
-        return res.status(error.response.status).json({ error: 'Error fetching items from all items by query param: ' + (error.response.data.message || 'Unknown error') });
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status || 500;
+        return next(new CustomError("Error fetching all items by query param from external Meli API", status, "EXTERNAL_API_ERROR"));
+      } else if (error instanceof Error) {
+        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
       } else {
-        return res.status(500).json({ error: 'Error fetching items from all items by query param:: An unexpected error occurred' });
+        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
       }
     }
 
@@ -85,10 +89,13 @@ export const getItemDetails = async (
       const itemResponse: AxiosResponse<Result> = await axios.get(`https://api.mercadolibre.com/items/${id}`);
       item = mapItemFromMeliApiToItem(itemResponse.data);
     } catch (error) {
-      if (error.response) {
-        return res.status(error.response.status).json({ error: 'Error fetching item: ' + (error.response.data.message || 'Unknown error') });
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status || 500;
+        return next(new CustomError("Error fetching item based on id from external Meli API", status, "EXTERNAL_API_ERROR"));
+      } else if (error instanceof Error) {
+        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
       } else {
-        return res.status(500).json({ error: 'Error fetching item: An unexpected error occurred' });
+        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
       }
     }
 
@@ -96,10 +103,13 @@ export const getItemDetails = async (
       const descriptionResponse: AxiosResponse<IItemDescriptionFromMeliResponse> = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
       item.description = descriptionResponse.data.plain_text;
     } catch (error) {
-      if (error.response) {
-        console.error({ error: `Error fetching item description: An unexpected error occurred` });
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status || 500;
+        return next(new CustomError("Error fetching item description based on id from external Meli API", status, "EXTERNAL_API_ERROR"));
+      } else if (error instanceof Error) {
+        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
       } else {
-        return res.status(500).json({ error: 'Error fetching item: An unexpected error occurred' });
+        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
       }
     }
 
