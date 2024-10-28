@@ -2,7 +2,7 @@ import { HTTP_SATUS_CODE } from '@/contracts/enums/main.js';
 import { CustomError } from '@/errors/customError.js';
 import { Request, Response } from 'express';
 
-export const errorHandler = (error: Error, req: Request, res: Response) => {
+export const errorHandler = (error: Error, _req: Request, res: Response) => {
   console.error(error);
 
   if (error instanceof CustomError) {

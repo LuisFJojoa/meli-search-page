@@ -1,5 +1,6 @@
 import { IAuthor } from "@/contracts/types/backend/author/main.js";
 import { customizedErrors } from "@/contracts/types/backend/errors/main.js";
+import { BASE_URL } from "@/core/env/variables.js";
 
 export const AUTHOR: IAuthor = {
   name: "Fernando",
@@ -39,3 +40,11 @@ export const CustomizedErrors: customizedErrors = Object.freeze({
     }
   }
 });
+
+export const ENDPOINTS = {
+  baseUrl: BASE_URL,
+  items: `${BASE_URL}/sites/MLA/search?q=`,
+  itemDetail: `${BASE_URL}/items/`,
+  itemDescription: '/description/',
+  categories: `${BASE_URL}/categories/`
+};
