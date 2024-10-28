@@ -11,6 +11,7 @@ export interface ICustomizedErrorResponse {
 
 type ItemErrorKeys = 'all' |'details' | 'description'
 type CategoriesErrorKeys = 'breadcrumb'
+type ServerErrorKeys = 'server'
 
 export type customizedErrors = {
 	item: {
@@ -18,5 +19,8 @@ export type customizedErrors = {
 	}
 	categories: {
 		[key in CategoriesErrorKeys]: ICustomizedErrors
+	}
+	internal: {
+		[key in ServerErrorKeys]: ICustomizedErrors
 	}
 }

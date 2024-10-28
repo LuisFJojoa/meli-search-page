@@ -5,7 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import router from './api/routes/main.js';
-import errorHandler from './middlewares/errorHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 const app = express();
 
 app.disable('x-powered-by');

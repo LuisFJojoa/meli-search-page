@@ -30,5 +30,12 @@ export const CustomizedErrors: customizedErrors = Object.freeze({
       message:
         'No se pudo obtener el breadcrumb para la categoría del item relacionado.'
     }
+  },
+  internal: {
+    server: {
+      code: 500,
+      message:
+        'Error en el servidor.'
+    }
   }
 });

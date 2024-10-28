@@ -3,9 +3,10 @@ import axios, { AxiosResponse } from 'axios';
 import { AvailableFilter, AvailableFilterValue, IItemDescriptionFromMeliResponse, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
 import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
 import { ICategoryResponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
-import { AUTHOR } from '@/consts/main.js';
+import { AUTHOR, CustomizedErrors } from '@/consts/main.js';
 import { mapItemFromMeliApiToItem, mapItemsFromMeliApiToItem } from '@/utils/main.js';
 import { CustomError } from '@/errors/customError.js';
+import { HTTP_SATUS_CODE } from '@/contracts/enums/main.js';
 
 export const getAllItems = async (
   req: Request,
@@ -18,61 +19,66 @@ export const getAllItems = async (
     return res.status(400).json({ error: 'Query parameter is required' });
   }
 
+  let results: Result[] = [];
+  let available_filters: AvailableFilter[] = [];
+  let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
+
   try {
-    let results: Result[] = [];
-    let categories: string[] = [];
-    let available_filters: AvailableFilter[];
-    let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
+    const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
+      `https://api.mercadolibre.com/sites/MLA/search?q=${query}`
+    );
 
-    try {
-      const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
-        `https://api.mercadolibre.com/sites/MLA/search?q=${query}`
-      );
-
-      results = itemsResponse.data.results.slice(0, 4);
-      available_filters = itemsResponse.data.available_filters;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const status = error.response?.status || 500;
-        return next(new CustomError("Error fetching all items by query param from external Meli API", status, "EXTERNAL_API_ERROR"));
-      } else if (error instanceof Error) {
-        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
-      } else {
-        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
-      }
+    results = itemsResponse.data.results.slice(0, 4);
+    available_filters = itemsResponse.data.available_filters;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new CustomError(CustomizedErrors.item.all);
+    } else if (error instanceof Error) {
+      throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
     }
+  }
 
-    const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
+  const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
 
-    try {
+  try {
 
-      mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
-        .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
-          (current.results > prev.results ? current : prev)) as AvailableFilterValue;
+    mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
+      .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
+        (current.results > prev.results ? current : prev)) as AvailableFilterValue;
 
+    const itemsByQueryParams: IItemsByQueryParamsResponse = {
+      author: AUTHOR,
+      categories: [],
+      items
+    };
+    if (mostCommonCategory) {
       const categoryResponse: AxiosResponse<ICategoryResponseFromMeliAPI> = await axios.get(
         `https://api.mercadolibre.com/categories/${mostCommonCategory.id}`
       );
 
-      categories = categoryResponse.data.path_from_root.map(
+      const categories = categoryResponse.data.path_from_root.map(
         (category: IPathFromRoot) => category.name
       ) || [];
-    } catch (error) {
-      console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
+
+      itemsByQueryParams.categories = categories.length !== 0 ? categories : [mostCommonCategory.name];
+
+
+    } else{
+      itemsByQueryParams.categories = [];
     }
-
-    const itemsByQueryParams: IItemsByQueryParamsResponse = {
-      author: AUTHOR,
-      categories: categories.length !== 0 ? categories : [mostCommonCategory.name],
-      items
-    };
-
+    
     res.json({
       data: itemsByQueryParams
     });
   } catch (error) {
-    next(error);
+    if (items) {
+      console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
+    } else {
+      next(error);
+    }
   }
+
+
 };
 
 
@@ -84,18 +90,15 @@ export const getItemDetails = async (
 
   const id = req.params.id;
   try {
-    let item: IItemDetail;
+    let item: IItemDetail = {} as IItemDetail;
     try {
       const itemResponse: AxiosResponse<Result> = await axios.get(`https://api.mercadolibre.com/items/${id}`);
       item = mapItemFromMeliApiToItem(itemResponse.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const status = error.response?.status || 500;
-        return next(new CustomError("Error fetching item based on id from external Meli API", status, "EXTERNAL_API_ERROR"));
+        throw new CustomError(CustomizedErrors.item.details);
       } else if (error instanceof Error) {
-        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
-      } else {
-        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
+        throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
       }
     }
 
@@ -104,12 +107,9 @@ export const getItemDetails = async (
       item.description = descriptionResponse.data.plain_text;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const status = error.response?.status || 500;
-        return next(new CustomError("Error fetching item descriptionbased on id from external Meli API", status, "EXTERNAL_API_ERROR"));
+        throw new CustomError(CustomizedErrors.item.description);
       } else if (error instanceof Error) {
-        return next(new CustomError(error.message, 500, "UNEXPECTED_ERROR"));
-      } else {
-        return next(new CustomError("An unexpected error occurred", 500, "UNKNOWN_ERROR"));
+        throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
       }
     }
 

@@ -1,18 +1,19 @@
+import { HTTP_SATUS_CODE } from '@/contracts/enums/main.js';
 import { CustomError } from '@/errors/customError.js';
 import { Request, Response } from 'express';
 
-const errorHandler = (err: Error, _req: Request, res: Response) => {
-  if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({
-      errorCode: err.errorCode,
-      message: err.message,
+export const errorHandler = (error: Error, req: Request, res: Response) => {
+  console.error(error);
+
+  if (error instanceof CustomError) {
+    res.status(error.statusCode).json({
+      error: error.message,
+      code: error.errorCode
+    });
+  } else {
+    res.status(HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR).json({
+      error: `Ocurrió un error inesperado: ${error}`,
+      code: HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR
     });
   }
-
-  res.status(500).json({
-    errorCode: "INTERNAL_SERVER_ERROR",
-    message: "An unexpected error occurred",
-  });
 };
-
-export default errorHandler;

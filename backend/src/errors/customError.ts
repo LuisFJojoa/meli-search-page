@@ -1,23 +1,18 @@
+import { HTTP_SATUS_CODE } from "@/contracts/enums/main.js";
+import { ICustomizedErrors } from "@/contracts/types/backend/errors/main.js";
+
+
 export class CustomError extends Error {
   public statusCode: number;
-  public errorCode: string;
+  public errorCode: number;
 
-  constructor(message: string, statusCode: number, errorCode: string) {
-    super(message);
+  constructor(customError: ICustomizedErrors, statusCode: HTTP_SATUS_CODE = 400) {
+    super(customError.message);
+    this.name = this.constructor.name;
     this.statusCode = statusCode;
-    this.errorCode = errorCode;
-    Object.setPrototypeOf(this, CustomError.prototype);
-  }
-}
+    this.errorCode = customError.code;
 
-export class NotFoundError extends CustomError {
-  constructor(message: string = "Resource not found") {
-    super(message, 404, "NOT_FOUND");
+    Error.captureStackTrace(this, this.constructor);
   }
-}
 
-export class BadRequestError extends CustomError {
-  constructor(message: string = "Bad request") {
-    super(message, 400, "BAD_REQUEST");
-  }
 }
