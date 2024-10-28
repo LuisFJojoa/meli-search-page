@@ -5,6 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import router from './api/routes/main.js';
+import errorHandler from './middlewares/errorHandler.js';
 const app = express();
 
 app.disable('x-powered-by');
@@ -28,5 +29,6 @@ app.get('/', async (_req, res) => {
 app.set('trust proxy', 'linklocal');
 
 app.use('/api', router);
+app.use(errorHandler);
 
 export default app;
