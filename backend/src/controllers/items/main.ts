@@ -16,69 +16,73 @@ export const getAllItems = async (
     return res.status(400).json({ error: 'Query parameter is required' });
   }
 
-  let results: Result[] = [];
-  let categories: string[] = [];
-  let available_filters: AvailableFilter[];
-  let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
-
   try {
-    const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
-      `https://api.mercadolibre.com/sites/MLA/search?q=${query}`
-    );
+    let results: Result[] = [];
+    let categories: string[] = [];
+    let available_filters: AvailableFilter[];
+    let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
 
-    results = itemsResponse.data.results.slice(0, 4);
-    available_filters = itemsResponse.data.available_filters;
-  } catch (error) {
-    if (error.response) {
-      return res.status(error.response.status).json({ error: 'Error fetching items from all items by query param: ' + (error.response.data.message || 'Unknown error') });
-    } else {
-      return res.status(500).json({ error: 'Error fetching items from all items by query param:: An unexpected error occurred' });
+    try {
+      const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
+        `https://api.mercadolibre.com/sites/MLA/search?q=${query}`
+      );
+
+      results = itemsResponse.data.results.slice(0, 4);
+      available_filters = itemsResponse.data.available_filters;
+    } catch (error) {
+      if (error.response) {
+        return res.status(error.response.status).json({ error: 'Error fetching items from all items by query param: ' + (error.response.data.message || 'Unknown error') });
+      } else {
+        return res.status(500).json({ error: 'Error fetching items from all items by query param:: An unexpected error occurred' });
+      }
     }
-  }
 
-  const items: IItem[] = results.map(
-    ({ id, title, currency_id, price, thumbnail, condition, shipping }: Result) => ({
-      id,
-      title,
-      price: {
-        currency: currency_id,
-        amount: Math.floor(price),
-        decimals: Math.round((price % 1) * 100),
-      },
-      picture: thumbnail,
-      condition,
-      free_shipping: shipping.free_shipping,
-      description: ''
-    })
-  );
-
-
-  try {
-
-    mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
-      .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
-        (current.results > prev.results ? current : prev)) as AvailableFilterValue;
-
-    const categoryResponse: AxiosResponse<ICategoryResponseFromMeliAPI> = await axios.get(
-      `https://api.mercadolibre.com/categories/${mostCommonCategory.id}`
+    const items: IItem[] = results.map(
+      ({ id, title, currency_id, price, thumbnail, condition, shipping }: Result) => ({
+        id,
+        title,
+        price: {
+          currency: currency_id,
+          amount: Math.floor(price),
+          decimals: Math.round((price % 1) * 100),
+        },
+        picture: thumbnail,
+        condition,
+        free_shipping: shipping.free_shipping,
+        description: ''
+      })
     );
 
-    categories = categoryResponse.data.path_from_root.map(
-      (category: IPathFromRoot) => category.name
-    ) || [];
+
+    try {
+
+      mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
+        .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
+          (current.results > prev.results ? current : prev)) as AvailableFilterValue;
+
+      const categoryResponse: AxiosResponse<ICategoryResponseFromMeliAPI> = await axios.get(
+        `https://api.mercadolibre.com/categories/${mostCommonCategory.id}`
+      );
+
+      categories = categoryResponse.data.path_from_root.map(
+        (category: IPathFromRoot) => category.name
+      ) || [];
+    } catch (error) {
+      console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
+    }
+
+    const itemsByQueryParams: IItemsByQueryParamsResponse = {
+      author: AUTHOR,
+      categories: categories.length !== 0 ? categories : [mostCommonCategory.name],
+      items
+    };
+
+    res.json({
+      data: itemsByQueryParams
+    });
   } catch (error) {
-    console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
+    next(error);
   }
-
-  const itemsByQueryParams: IItemsByQueryParamsResponse = {
-    author: AUTHOR,
-    categories: categories.length !== 0 ? categories : [mostCommonCategory.name],
-    items
-  };
-
-  res.json({
-    data: itemsByQueryParams
-  });
 };
 
 
