@@ -1,9 +1,7 @@
 import { IAuthor } from "../author/main.js";
 
-export interface IItem {
+export interface IItemFromQueryParams {
   id: string;
-  title: string;
-  categories?: string[];
   price: {
     currency: string;
     amount: number;
@@ -12,7 +10,13 @@ export interface IItem {
   picture: string;
   condition: string;
   free_shipping: boolean;
+  title: string;
+}
+
+export interface IItemDetail extends IItemFromQueryParams{
+  categories?: string[];
   description: string
+  sold_quantity?: number
 }
 
 export interface ICategory {
@@ -23,5 +27,10 @@ export interface ICategory {
 export interface IItemsByQueryParamsResponse {
   author: IAuthor;
   categories: string[];
-  items: IItem[];
+  items: IItemFromQueryParams[];
+}
+
+export interface IItemDetailsByIdResponse {
+  author: IAuthor
+  item: IItemDetail
 }

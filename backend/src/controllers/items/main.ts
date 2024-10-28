@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import axios, { AxiosResponse } from 'axios';
-import { AvailableFilter, AvailableFilterValue, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
-import { IItem, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
+import { AvailableFilter, AvailableFilterValue, IItemDescriptionFromMeliResponse, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
+import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
 import { ICategoryResponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
 import { AUTHOR } from '@/consts/main.js';
+import { mapItemFromMeliApiToItem, mapItemsFromMeliApiToItem } from '@/utils/main.js';
 
 export const getAllItems = async (
   req: Request,
@@ -37,22 +38,7 @@ export const getAllItems = async (
       }
     }
 
-    const items: IItem[] = results.map(
-      ({ id, title, currency_id, price, thumbnail, condition, shipping }: Result) => ({
-        id,
-        title,
-        price: {
-          currency: currency_id,
-          amount: Math.floor(price),
-          decimals: Math.round((price % 1) * 100),
-        },
-        picture: thumbnail,
-        condition,
-        free_shipping: shipping.free_shipping,
-        description: ''
-      })
-    );
-
+    const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
 
     try {
 
@@ -94,10 +80,10 @@ export const getItemDetails = async (
 
   const id = req.params.id;
   try {
-    let itemData;
+    let item: IItemDetail;
     try {
-      const itemResponse = await axios.get(`https://api.mercadolibre.com/items/${id}`);
-      itemData = itemResponse.data;
+      const itemResponse: AxiosResponse<Result> = await axios.get(`https://api.mercadolibre.com/items/${id}`);
+      item = mapItemFromMeliApiToItem(itemResponse.data);
     } catch (error) {
       if (error.response) {
         return res.status(error.response.status).json({ error: 'Error fetching item: ' + (error.response.data.message || 'Unknown error') });
@@ -106,38 +92,24 @@ export const getItemDetails = async (
       }
     }
 
-    let descriptionData;
     try {
-      const descriptionResponse = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
-      descriptionData = descriptionResponse.data;
+      const descriptionResponse: AxiosResponse<IItemDescriptionFromMeliResponse> = await axios.get(`https://api.mercadolibre.com/items/${id}/description`);
+      item.description = descriptionResponse.data.plain_text;
     } catch (error) {
       if (error.response) {
-        return res.status(error.response.status).json({ error: 'Error fetching item description: ' + (error.response.data.message || 'Unknown error') });
+        console.error({ error: `Error fetching item description: An unexpected error occurred` });
       } else {
-        return res.status(500).json({ error: 'Error fetching item description: An unexpected error occurred' });
+        return res.status(500).json({ error: 'Error fetching item: An unexpected error occurred' });
       }
     }
 
+    const itemDetailsResponse: IItemDetailsByIdResponse = {
+      author: AUTHOR,
+      item
+    };
 
     res.json({
-      author: {
-        name: 'Fernando',
-        lastname: 'Jojoa'
-      },
-      item: {
-        id: itemData.id,
-        title: itemData.title,
-        price: {
-          currency: itemData.currency_id,
-          amount: itemData.price,
-          decimals: Math.round((itemData.price % 1) * 100)
-        },
-        picture: itemData.pictures[0]?.url,
-        condition: itemData.condition,
-        free_shipping: itemData.shipping.free_shipping,
-        sold_quantity: itemData.sold_quantity,
-        description: descriptionData
-      }
+      data: itemDetailsResponse
     });
   } catch (error) {
     next(error);

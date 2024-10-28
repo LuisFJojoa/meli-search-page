@@ -206,3 +206,18 @@ export interface VariationsDatumAttribute {
   value_name: string;
   value_type: string;
 }
+
+export interface IItemDescriptionFromMeliResponse {
+  text: string;
+  plain_text: string;
+  last_updated: Date;
+  date_created: Date;
+  snapshot: ISnapshotToDescription;
+}
+
+export interface ISnapshotToDescription {
+  url: string;
+  width: number;
+  height: number;
+  status: string;
+}
