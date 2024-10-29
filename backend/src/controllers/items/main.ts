@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import axios, { AxiosResponse } from 'axios';
-import { AvailableFilter, AvailableFilterValue, IItemDescriptionFromMeliResponse, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
+import { AvailableFilter, AvailableFilterValue, Filter, IItemDescriptionFromMeliResponse, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
 import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
 import { ICategoryResponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
 import { AUTHOR, CustomizedErrors, ENDPOINTS } from '@/consts/main.js';
@@ -21,7 +21,14 @@ export const getAllItems = async (
 
   let results: Result[] = [];
   let available_filters: AvailableFilter[] = [];
+  let filters: Filter = {} as Filter;
   let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
+
+  const itemsByQueryParams: IItemsByQueryParamsResponse = {
+    author: AUTHOR,
+    categories: [],
+    items: []
+  };
 
   try {
     const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
@@ -29,7 +36,14 @@ export const getAllItems = async (
     );
 
     results = itemsResponse.data.results.slice(0, 4);
+
+    if (results.length === 0) {
+      return res.json({
+        data: itemsByQueryParams
+      });
+    }
     available_filters = itemsResponse.data.available_filters;
+    filters = itemsResponse.data.filters[0];
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new CustomError(CustomizedErrors.item.all);
@@ -40,7 +54,10 @@ export const getAllItems = async (
 
   const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
 
+  itemsByQueryParams.items = items;
+
   try {
+
 
     mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
       .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
@@ -63,10 +80,18 @@ export const getAllItems = async (
       itemsByQueryParams.categories = categories.length !== 0 ? categories : [mostCommonCategory.name];
 
 
-    } else{
-      itemsByQueryParams.categories = [];
+    } else {
+
+      if (Object.keys(filters).length !== 0) {
+        itemsByQueryParams.categories = filters.values[0].path_from_root?.reverse().map(
+          (category: IPathFromRoot) => category.name
+        ) || [];
+
+      } else {
+        itemsByQueryParams.categories = [];
+      }
     }
-    
+
     res.json({
       data: itemsByQueryParams
     });
