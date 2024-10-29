@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import ItemsRepository from '../services'
+import ItemsRepository from '../../../services'
 
 export const SearchResults = () => {
 	const location = useLocation()
@@ -11,7 +11,7 @@ export const SearchResults = () => {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 
-	const itemsRepository = new ItemsRepository() // Crea una instancia del repositorio
+	const itemsRepository = new ItemsRepository()
 
 	useEffect(() => {
 		const fetchItems = async () => {
@@ -19,22 +19,20 @@ export const SearchResults = () => {
 				setLoading(true)
 				const result =
 					await itemsRepository.getItemsByQueryParam(searchQuery)
-				console.log(result.data.items)
 
-				setItems(result.data.items) // Guarda los resultados en el estado
+				setItems(result.data.items)
 			} catch (err) {
-				setError(err.message) // Maneja el error
+				setError(err.message)
 			} finally {
-				setLoading(false) // Finaliza el estado de carga
+				setLoading(false)
 			}
 		}
 
 		if (searchQuery) {
 			fetchItems()
 		}
-	}, [searchQuery]) // Dependencia en searchQuery para volver a ejecutar el efecto si cambia
+	}, [searchQuery])
 
-	// Manejo de errores y loading
 	if (loading) return <div>Cargando...</div>
 	if (error) return <div>Error: {error}</div>
 
@@ -43,7 +41,7 @@ export const SearchResults = () => {
 			<h2>Resultados para: {searchQuery}</h2>
 			<ul>
 				{items.map((item) => (
-					<li key={item.id}>{item.title}</li> // Cambia las propiedades según tu estructura de datos
+					<li key={item.id}>{item.title}</li>
 				))}
 			</ul>
 		</div>

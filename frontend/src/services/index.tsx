@@ -13,4 +13,10 @@ export default class ItemsRepository {
 		const result = await this.http.get(url)
 		return result.data
 	}
+
+	async getItemDetails(id: string) {
+		const url = API_ENDPOINTS.ITEM.GET_DETAIL(id)
+		const result = await this.http.get(url)
+		return result.data
+	}
 }
