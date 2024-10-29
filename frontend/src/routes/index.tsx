@@ -1,4 +1,5 @@
 import { SearchLayout } from '@/layouts/searchLayout'
+import { ItemDetail } from '@/modules/itemDetail/page'
 import { SearchResults } from '@/modules/searchResults/page'
 import { ReactElement } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -12,7 +13,7 @@ export default function AppRoutes(): ReactElement {
 					<Route path='' element={<>Home</>} index />
 					<Route path='items'>
 						<Route element={<SearchResults />} index />
-						<Route element={<>item details</>} path=':id' />
+						<Route element={<ItemDetail />} path=':id' />
 					</Route>
 				</Route>
 			</Routes>
