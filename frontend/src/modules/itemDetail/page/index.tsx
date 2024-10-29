@@ -1,3 +1,7 @@
+import {
+	IItemDetail,
+	IItemDetailsByIdResponse
+} from '@/contracts/types/backend/items'
 import ItemsRepository from '@/services'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -5,7 +9,7 @@ import { useParams } from 'react-router-dom'
 export const ItemDetail = () => {
 	const { id } = useParams()
 
-	const [item, setItems] = useState({})
+	const [item, setItems] = useState<IItemDetail>({} as IItemDetail)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 
@@ -15,9 +19,10 @@ export const ItemDetail = () => {
 		const fetchItemDetails = async () => {
 			try {
 				setLoading(true)
-				const result = await itemsRepository.getItemDetails(id)
+				const result: IItemDetailsByIdResponse =
+					await itemsRepository.getItemDetails(id as string)
 
-				setItems(result.data.item)
+				setItems(result.item)
 			} catch (err) {
 				setError(err.message)
 			} finally {
@@ -38,7 +43,7 @@ export const ItemDetail = () => {
 			<h2>Resultados para item con id: {id}</h2>
 			<p>{item.id}</p>
 			<p>{item.title}</p>
-			<img src={item.picture} alt='' srcset='' />
+			<img src={item.picture} alt='' />
 			<p>{item.description}</p>
 		</div>
 	)

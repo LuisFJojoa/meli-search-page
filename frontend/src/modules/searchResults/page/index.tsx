@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import ItemsRepository from '../../../services'
+import {
+	IItemFromQueryParams,
+	IItemsByQueryParamsResponse
+} from '@/contracts/types/backend/items'
 
 export const SearchResults = () => {
 	const location = useLocation()
 	const queryParams = new URLSearchParams(location.search)
 	const searchQuery = queryParams.get('search')
 
-	const [items, setItems] = useState([])
+	const [items, setItems] = useState<IItemFromQueryParams[]>([])
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 
@@ -17,10 +21,12 @@ export const SearchResults = () => {
 		const fetchItems = async () => {
 			try {
 				setLoading(true)
-				const result =
-					await itemsRepository.getItemsByQueryParam(searchQuery)
+				const result: IItemsByQueryParamsResponse =
+					await itemsRepository.getItemsByQueryParam(
+						searchQuery as string
+					)
 
-				setItems(result.data.items)
+				setItems(result.items)
 			} catch (err) {
 				setError(err.message)
 			} finally {
