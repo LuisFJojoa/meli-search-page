@@ -1,13 +1,12 @@
 import { HTTP_SATUS_CODE } from '@/contracts/enums/main.js';
 import { CustomError } from '@/errors/customError.js';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-export const errorHandler = (error: Error, _req: Request, res: Response) => {
-  console.error(error);
+export const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunction) => {
 
   if (error instanceof CustomError) {
     res.status(error.statusCode).json({
-      error: error.message,
+      message: error.message,
       code: error.errorCode
     });
   } else {

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, isAxiosError } from 'axios';
 import { AvailableFilter, AvailableFilterValue, Filter, IItemDescriptionFromMeliResponse, IItemsReponseFromMeliAPI, Result } from '@/contracts/types/meli/items/main.js';
 import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items/main.js';
 import { ICategoryResponseFromMeliAPI, IPathFromRoot } from '@/contracts/types/meli/category/main.js';
@@ -30,6 +30,7 @@ export const getAllItems = async (
     items: []
   };
 
+
   try {
     const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
       `${ENDPOINTS.items}${query}`
@@ -38,18 +39,13 @@ export const getAllItems = async (
     results = itemsResponse.data.results.slice(0, 4);
 
     if (results.length === 0) {
-      return res.json({
-        data: itemsByQueryParams
-      });
+
+      throw new CustomError(CustomizedErrors.item.all);
     }
     available_filters = itemsResponse.data.available_filters;
     filters = itemsResponse.data.filters[0];
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new CustomError(CustomizedErrors.item.all);
-    } else if (error instanceof Error) {
-      throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
-    }
+    next(error);
   }
 
   const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
@@ -63,11 +59,6 @@ export const getAllItems = async (
       .reduce((prev: AvailableFilterValue, current: AvailableFilterValue) =>
         (current.results > prev.results ? current : prev)) as AvailableFilterValue;
 
-    const itemsByQueryParams: IItemsByQueryParamsResponse = {
-      author: AUTHOR,
-      categories: [],
-      items
-    };
     if (mostCommonCategory) {
       const categoryResponse: AxiosResponse<ICategoryResponseFromMeliAPI> = await axios.get(
         `${ENDPOINTS.categories}${mostCommonCategory.id}`
@@ -118,9 +109,12 @@ export const getItemDetails = async (
     let item: IItemDetail = {} as IItemDetail;
     try {
       const itemResponse: AxiosResponse<Result> = await axios.get(`${ENDPOINTS.itemDetail}${id}`);
+      console.log(itemResponse.data);
+
       item = mapItemFromMeliApiToItem(itemResponse.data);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+
+      if (error instanceof CustomError || isAxiosError(error)) {
         throw new CustomError(CustomizedErrors.item.details);
       } else if (error instanceof Error) {
         throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
@@ -131,7 +125,7 @@ export const getItemDetails = async (
       const descriptionResponse: AxiosResponse<IItemDescriptionFromMeliResponse> = await axios.get(`${ENDPOINTS.itemDetail}${id}${ENDPOINTS.itemDescription}`);
       item.description = descriptionResponse.data.plain_text;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (error instanceof CustomError) {
         throw new CustomError(CustomizedErrors.item.description);
       } else if (error instanceof Error) {
         throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);

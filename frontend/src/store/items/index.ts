@@ -32,12 +32,15 @@ export const useSearchStore = create<SearchStoreState>()(
 							loading: false
 						}))
 					} catch (error) {
+
+            console.log(error);
+            
 						if (isAxiosError(error)) {
-							const errorContent = error.response?.data
-								?.data as ICustomizedErrors
+							const errorContent = error.response?.data as ICustomizedErrors
 
 							set((state) => ({
 								...state,
+                loading: false,
 								errors: {
 									...state.errors,
 									items: errorContent
