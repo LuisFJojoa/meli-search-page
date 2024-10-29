@@ -16,6 +16,7 @@ export const getAllItems = async (
   const query = req.query.q;
 
   if (!query) {
+    
     return res.status(400).json({ error: 'Query parameter is required' });
   }
 
@@ -23,13 +24,13 @@ export const getAllItems = async (
   let available_filters: AvailableFilter[] = [];
   let filters: Filter = {} as Filter;
   let mostCommonCategory: AvailableFilterValue = {} as AvailableFilterValue;
+  let items: IItemFromQueryParams[] = {} as IItemFromQueryParams[];
 
   const itemsByQueryParams: IItemsByQueryParamsResponse = {
     author: AUTHOR,
     categories: [],
     items: []
   };
-
 
   try {
     const itemsResponse: AxiosResponse<IItemsReponseFromMeliAPI> = await axios.get(
@@ -44,15 +45,10 @@ export const getAllItems = async (
     }
     available_filters = itemsResponse.data.available_filters;
     filters = itemsResponse.data.filters[0];
-  } catch (error) {
-    next(error);
-  }
+  
+    items = mapItemsFromMeliApiToItem(results);
 
-  const items: IItemFromQueryParams[] = mapItemsFromMeliApiToItem(results);
-
-  itemsByQueryParams.items = items;
-
-  try {
+    itemsByQueryParams.items = items;
 
 
     mostCommonCategory = available_filters.find((filter: AvailableFilter) => filter.id === 'category')?.values
@@ -109,11 +105,8 @@ export const getItemDetails = async (
     let item: IItemDetail = {} as IItemDetail;
     try {
       const itemResponse: AxiosResponse<Result> = await axios.get(`${ENDPOINTS.itemDetail}${id}`);
-      console.log(itemResponse.data);
-
       item = mapItemFromMeliApiToItem(itemResponse.data);
     } catch (error) {
-
       if (error instanceof CustomError || isAxiosError(error)) {
         throw new CustomError(CustomizedErrors.item.details);
       } else if (error instanceof Error) {
