@@ -1,4 +1,4 @@
 export interface IAuthor {
-  name: string;
-  lastname: string;
+	name: string
+	lastname: string
 }

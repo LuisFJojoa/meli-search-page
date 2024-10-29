@@ -1,5 +1,4 @@
-import { HTTP_SATUS_CODE } from "@/contracts/enums/main"
-
+import { HTTP_SATUS_CODE } from '@/contracts/enums/main'
 
 export interface ICustomizedErrors {
 	code: number

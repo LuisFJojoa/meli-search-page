@@ -1,46 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import ItemsRepository from '../../../services'
-import {
-	IItemFromQueryParams,
-	IItemsByQueryParamsResponse
-} from '@/contracts/types/backend/items'
+import { useSearchStore } from '@/store/items'
 
 export const SearchResults = () => {
 	const location = useLocation()
 	const queryParams = new URLSearchParams(location.search)
 	const searchQuery = queryParams.get('search')
 
-	const [items, setItems] = useState<IItemFromQueryParams[]>([])
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(null)
-
-	const itemsRepository = new ItemsRepository()
+	const { items, loading, errors, getAllItems } = useSearchStore()
 
 	useEffect(() => {
-		const fetchItems = async () => {
-			try {
-				setLoading(true)
-				const result: IItemsByQueryParamsResponse =
-					await itemsRepository.getItemsByQueryParam(
-						searchQuery as string
-					)
-
-				setItems(result.items)
-			} catch (err) {
-				setError(err.message)
-			} finally {
-				setLoading(false)
-			}
-		}
-
 		if (searchQuery) {
-			fetchItems()
+			getAllItems(searchQuery as string)
 		}
-	}, [searchQuery])
+	}, [searchQuery, getAllItems])
+
+	console.log(loading)
 
 	if (loading) return <div>Cargando...</div>
-	if (error) return <div>Error: {error}</div>
+	if (errors?.items) return <div>Error: {errors.items.message}</div>
 
 	return (
 		<div>
