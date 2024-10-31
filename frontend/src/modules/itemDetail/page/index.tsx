@@ -1,42 +1,18 @@
-import {
-	IItemDetail,
-	IItemDetailsByIdResponse
-} from '@/contracts/types/backend/items'
-import ItemsRepository from '@/services'
-import { useEffect, useState } from 'react'
+import { useSearchStore } from '@/store/items'
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 export const ItemDetail = () => {
 	const { id } = useParams()
-
-	const [item, setItems] = useState<IItemDetail>({} as IItemDetail)
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(null)
-
-	const itemsRepository = new ItemsRepository()
-
+	const { item, loading, errors, getItemDetails } = useSearchStore()
 	useEffect(() => {
-		const fetchItemDetails = async () => {
-			try {
-				setLoading(true)
-				const result: IItemDetailsByIdResponse =
-					await itemsRepository.getItemDetails(id as string)
-
-				setItems(result.item)
-			} catch (err) {
-				setError(err.message)
-			} finally {
-				setLoading(false)
-			}
-		}
-
 		if (id) {
-			fetchItemDetails()
+			getItemDetails(id)
 		}
-	}, [id])
+	}, [id, getItemDetails])
 
 	if (loading) return <div>Cargando...</div>
-	if (error) return <div>Error: {error}</div>
+	if (errors?.items) return <div>Error: {errors.items.message}</div>
 
 	return (
 		<div>

@@ -15,8 +15,6 @@ export const SearchResults = () => {
 		}
 	}, [searchQuery, getAllItems])
 
-	console.log(loading)
-
 	if (loading) return <div>Cargando...</div>
 	if (errors?.items) return <div>Error: {errors.items.message}</div>
 

@@ -1,5 +1,6 @@
+import { IAuthor } from '@/contracts/types/backend/author/main'
 import { ICustomizedErrors } from '@/contracts/types/backend/errors'
-import { IItemsByQueryParamsResponse } from '@/contracts/types/backend/items'
+import { IItemDetail, IItemDetailsByIdResponse, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items'
 import { SearchStoreState, SearchStoreValues } from '@/contracts/types/store'
 import ItemsRepository from '@/services'
 import { isAxiosError } from 'axios'
@@ -8,6 +9,8 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export const initialState: SearchStoreValues = {
 	items: [],
+	item: {} as IItemDetail,
+	signature: { name: 'Undefined', lastname: 'Undefined' } as IAuthor,
 	loading: false,
 	errors: undefined
 }
@@ -29,21 +32,52 @@ export const useSearchStore = create<SearchStoreState>()(
 						set((state) => ({
 							...state,
 							items: result.items,
+							signature: result.author,
 							loading: false
 						}))
 					} catch (error) {
 
-            console.log(error);
-            
 						if (isAxiosError(error)) {
 							const errorContent = error.response?.data as ICustomizedErrors
 
 							set((state) => ({
 								...state,
-                loading: false,
+								loading: false,
+
 								errors: {
 									...state.errors,
 									items: errorContent
+								}
+							}))
+						}
+					}
+				},
+				getItemDetails: async (itemId: string) => {
+					try {
+						set({ loading: true, errors: undefined })
+						const itemsRepository = new ItemsRepository()
+						const result: IItemDetailsByIdResponse =
+							await itemsRepository.getItemDetails(itemId)
+
+						set((state) => ({
+							...state,
+							item: result.item,
+							signature: result.author,
+							loading: false
+						}))
+					} catch (error) {
+
+						console.log(error);
+
+						if (isAxiosError(error)) {
+							const errorContent = error.response?.data as ICustomizedErrors
+
+							set((state) => ({
+								...state,
+								loading: false,
+								errors: {
+									...state.errors,
+									item: errorContent
 								}
 							}))
 						}
