@@ -1,10 +1,9 @@
+import { Header } from '@/components/header'
 import { Outlet } from 'react-router-dom'
 
 export const SearchLayout = () => (
 	<div>
-		<header>
-			<h1>My Header</h1>
-		</header>
+		<Header />
 		<main>
 			<Outlet />
 		</main>
