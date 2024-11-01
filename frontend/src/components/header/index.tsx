@@ -2,9 +2,13 @@ import React, { useState } from 'react'
 import searchIcon from '@/assets/icons/ic_Search.png'
 import logoIcon from '@/assets/icons/Logo_ML.png'
 import './header.scss'
+import { useNavigate } from 'react-router-dom'
+import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 
 export const Header = () => {
 	const [searchTerm, setSearchTerm] = useState('')
+
+	const navigate = useNavigate();
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target
@@ -12,7 +16,12 @@ export const Header = () => {
 	}
 
 	const handleSearch = () => {
-		console.log('Buscando:', searchTerm)
+		if (searchTerm !== '') {
+			navigate(NAVIGATION_PATHS.ITEM.GET_ALL(searchTerm))
+		} else{
+			console.log('No se ha escrito nada');
+			
+		}
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
