@@ -16,7 +16,7 @@ export const getAllItems = async (
   const query = req.query.q;
 
   if (!query) {
-    
+
     return res.status(400).json({ error: 'Query parameter is required' });
   }
 
@@ -45,7 +45,7 @@ export const getAllItems = async (
     }
     available_filters = itemsResponse.data.available_filters;
     filters = itemsResponse.data.filters[0];
-  
+
     items = mapItemsFromMeliApiToItem(results);
 
     itemsByQueryParams.items = items;
@@ -103,13 +103,33 @@ export const getItemDetails = async (
   const id = req.params.id;
   try {
     let item: IItemDetail = {} as IItemDetail;
-   
+    let categoryId = '';
+
     try {
       const itemResponse: AxiosResponse<Result> = await axios.get(`${ENDPOINTS.itemDetail}${id}`);
       item = mapItemFromMeliApiToItem(itemResponse.data);
+      categoryId = itemResponse.data.category_id;
     } catch (error) {
       if (error instanceof CustomError || isAxiosError(error)) {
         throw new CustomError(CustomizedErrors.item.details);
+      } else if (error instanceof Error) {
+        throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    try {
+      const categoryResponse: AxiosResponse<ICategoryResponseFromMeliAPI> = await axios.get(
+        `${ENDPOINTS.categories}${categoryId}`
+      );
+
+      const categories = categoryResponse.data.path_from_root.map(
+        (category: IPathFromRoot) => category.name
+      ) || [];
+
+      item.categories = categories.length !== 0 ? categories : [];
+    } catch (error) {
+      if (error instanceof CustomError || isAxiosError(error)) {
+        item.categories = [];
       } else if (error instanceof Error) {
         throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
       }
