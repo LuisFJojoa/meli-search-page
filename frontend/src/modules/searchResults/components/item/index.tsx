@@ -1,0 +1,44 @@
+import { ItemProps } from '../../interfaces'
+
+export const Item = ({ info }: ItemProps) => {
+	const { title, price, free_shipping, picture } = info
+	return (
+		<article>
+			<section className='item'>
+				<section className='item__image-container'>
+					<img
+						src={picture}
+						alt='image-icon'
+						className='item__image-container__image'
+					/>
+				</section>
+				<section className='item__info-container'>
+					<section className='item__info-container__header'>
+						<section className='item__info-container__header__detail'>
+							<p className='item__info-container__header__detail__price'>
+								$ {price?.amount} ({price?.currency})
+							</p>
+							{free_shipping && (
+								<img
+									src={'@/assets/icons/ic_Search.png'}
+									alt='searh-icon'
+									className='item__search-container__icon-container__icon'
+								/>
+							)}
+						</section>
+						<section className='item__info-container__header__city'>
+							<p className='item__info-container__header__city__value'>
+								Mendoza
+							</p>
+						</section>
+					</section>
+					<section className='item__info-container__description'>
+						<p className='item__info-container__header__description__value'>
+							{title}
+						</p>
+					</section>
+				</section>
+			</section>
+		</article>
+	)
+}

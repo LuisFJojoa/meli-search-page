@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSearchStore } from '@/store/items'
+import { Item } from '../components/item'
 
 export const SearchResults = () => {
 	const location = useLocation()
@@ -25,11 +26,7 @@ export const SearchResults = () => {
 			<h1>{itemsByQueryParams.categories}</h1>
 			<ul>
 				{itemsByQueryParams.items?.map((item) => (
-					<>
-						<li key={item.id}>{item.title}</li>
-						<li key={item.id}>{item.price.amount}</li>
-						<li key={item.id}>{item.free_shipping ? 'true': 'false'}</li>
-					</>
+					<Item info={item}/>
 				))}
 			</ul>
 		</section>
