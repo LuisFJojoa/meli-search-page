@@ -60,15 +60,15 @@ export const useSearchStore = create<SearchStoreState>()(
 						const result: IItemDetailsByIdResponse =
 							await itemsRepository.getItemDetails(itemId)
 
-						set((state) => ({
+						set((state) => (
+							{
 							...state,
+							categories: Array.from(new Set([...(state.categories || []), ...(result?.item?.categories || [])])),
 							item: result.item,
 							signature: result.author,
 							loading: false
 						}))
 					} catch (error) {
-
-						console.log(error);
 
 						if (isAxiosError(error)) {
 							const errorContent = error.response?.data as ICustomizedErrors
