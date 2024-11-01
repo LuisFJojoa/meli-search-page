@@ -8,18 +8,18 @@
   z-index: 1000;
   padding: 1rem;
 
-  .header-content {
+  &__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    h1 {
+    
+    &__title {
       margin: 0;
       font-size: 1.5rem;
       color: #333;
     }
 
-    .search-input {
+    &__search-input {
       padding: 0.5rem;
       border: 1px solid #ccc;
       border-radius: 4px;
