@@ -8,7 +8,9 @@ export const SearchLayout = () => (
 		<Header />
 		<main className='main-layout'>
 			<Breadcrumb />
-			<Outlet />
+			<section className='main-layout__container'>
+				<Outlet />
+			</section>
 		</main>
 	</div>
 )

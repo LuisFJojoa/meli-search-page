@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSearchStore } from '@/store/items'
 import { Item } from '../components/item'
-import './searchResultPage.scss'
 import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 
 export const SearchResults = () => {
@@ -10,8 +9,7 @@ export const SearchResults = () => {
 	const queryParams = new URLSearchParams(location.search)
 	const searchQuery = queryParams.get('search')
 
-	const { items, loading, errors, getAllItems } =
-		useSearchStore()
+	const { items, loading, errors, getAllItems } = useSearchStore()
 
 	const navigate = useNavigate()
 
@@ -26,19 +24,17 @@ export const SearchResults = () => {
 	}
 
 	if (loading) return <div>Cargando...</div>
-	if (errors?.items)
-		return <div>Error: {errors.items.message}</div>
+	if (errors?.items) return <div>Error: {errors.items.message}</div>
 
 	return (
-		
-			<section className='main-layout__container'>
-				{items?.map((item) => (
-					<Item
-						key={item.id}
-						info={item}
-						navigateToItemDetails={handleItemDatailsNavigation}
-					/>
-				))}
-			</section>
+		<>
+			{items?.map((item) => (
+				<Item
+					key={item.id}
+					info={item}
+					navigateToItemDetails={handleItemDatailsNavigation}
+				/>
+			))}
+		</>
 	)
 }
