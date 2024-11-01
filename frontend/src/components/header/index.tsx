@@ -10,16 +10,16 @@ export const Header = () => {
 
 	return (
 		<header className='header'>
-			<div className='header__content'>
+			<section className='header__content'>
 				<h1 className='header__content__title'>Mi Aplicación</h1>
 				<input
 					type='text'
 					value={searchTerm}
 					onChange={handleInputChange}
-					placeholder='Buscar...'
+					placeholder='Nunca dejes de buscar'
 					className='header__content__search-input'
 				/>
-			</div>
+			</section>
 		</header>
 	)
 }
