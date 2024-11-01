@@ -1,0 +1,34 @@
+@use '../../../../styles/mixins' as *;
+@use '../../../../styles/variables' as *;
+
+.item{
+  @include flex(center, space-between);
+  height: 18rem;
+  background-color: inherit;
+  margin: $padding-sm 0;
+
+  &__image-container{
+    width: 18rem;
+    @include flex(flex-start, flex-start);
+    margin: 0;
+
+    &__image{
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      border-radius: 0.4rem;
+    }
+  }
+  &__info-container{
+    @include flex(center, flex-start);
+
+    &__image{
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      display: flex;
+    }
+  }
+}

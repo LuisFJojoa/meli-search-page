@@ -1,10 +1,11 @@
 import { ItemProps } from '../../interfaces'
+import './item.scss'
+import freeShippingIcon from '@/assets/icons/ic_shipping.png'
 
 export const Item = ({ info }: ItemProps) => {
 	const { title, price, free_shipping, picture } = info
 	return (
-		<article>
-			<section className='item'>
+			<article className='item'>
 				<section className='item__image-container'>
 					<img
 						src={picture}
@@ -20,7 +21,7 @@ export const Item = ({ info }: ItemProps) => {
 							</p>
 							{free_shipping && (
 								<img
-									src={'@/assets/icons/ic_Search.png'}
+									src={freeShippingIcon}
 									alt='searh-icon'
 									className='item__search-container__icon-container__icon'
 								/>
@@ -38,7 +39,6 @@ export const Item = ({ info }: ItemProps) => {
 						</p>
 					</section>
 				</section>
-			</section>
-		</article>
+			</article>
 	)
 }
