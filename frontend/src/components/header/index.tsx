@@ -7,7 +7,18 @@ export const Header = () => {
 	const [searchTerm, setSearchTerm] = useState('')
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(event.target.value)
+		const { value } = event.target
+		setSearchTerm(value)
+	}
+
+	const handleSearch = () => {
+		console.log('Buscando:', searchTerm)
+	}
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			handleSearch()
+		}
 	}
 
 	return (
@@ -25,10 +36,13 @@ export const Header = () => {
 						type='text'
 						value={searchTerm}
 						onChange={handleInputChange}
+						onKeyDown={handleKeyDown}
 						placeholder='Nunca dejes de buscar...'
 						className='header__content__search-container__input'
 					/>
-					<section className='header__content__search-container__icon-container'>
+					<section
+						className='header__content__search-container__icon-container'
+						onClick={handleSearch}>
 						<img
 							src={searchIcon}
 							alt='searh-icon'
@@ -40,3 +54,4 @@ export const Header = () => {
 		</header>
 	)
 }
+
