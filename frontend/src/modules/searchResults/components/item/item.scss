@@ -6,6 +6,13 @@
   height: 18rem;
   background-color: inherit;
   margin: $padding-sm 0;
+  border-radius: 0.4rem;
+  transition: all ease-in-out 300ms;
+
+  &:hover{
+    cursor: pointer;
+    box-shadow: $medium-gray 0px 4px 12px;
+  }
 
   &__image-container {
     width: 18rem;
@@ -73,9 +80,11 @@
       width: 100%;
 
       &__value{
+        width: 80%;
         font-size: $font-size-lg;
         margin: 0;
-        padding: 0;  
+        padding: 0; 
+        line-height: $font-size-2xl; 
       }
     }
 

@@ -6,7 +6,7 @@
   flex-direction: column;
   width: 100%;
   row-gap: $padding-sm;
-  padding-top: $padding-sm;
+  padding: $padding-sm 0 $padding-lg;
 
   &__breadcrumb {
     width: 100%;
