@@ -30,11 +30,8 @@ export const SearchResults = () => {
 		return <div>Error: {errors.itemsByQueryParams.message}</div>
 
 	return (
-		<section className='search-results-page'>
-			<h1 className='search-results-page__breadcrumb'>
-				{itemsByQueryParams.categories}
-			</h1>
-			<section className='search-results-page__container'>
+		
+			<section className='main-layout__container'>
 				{itemsByQueryParams.items?.map((item) => (
 					<Item
 						key={item.id}
@@ -43,6 +40,5 @@ export const SearchResults = () => {
 					/>
 				))}
 			</section>
-		</section>
 	)
 }
