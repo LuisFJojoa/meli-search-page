@@ -32,7 +32,7 @@ export const useSearchStore = create<SearchStoreState>()(
 						set((state) => ({
 							...state,
 							categories: result.categories,
-							itemsByQueryParams: result.items,
+							items: result.items,
 							signature: result.author,
 							loading: false
 						}))
