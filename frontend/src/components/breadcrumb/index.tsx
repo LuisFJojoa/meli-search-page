@@ -1,7 +1,10 @@
+import { useSearchStore } from '@/store/items'
+
 export const Breadcrumb = () => {
+	const { categories } = useSearchStore()
 	return (
 		<h1 className='main-layout__breadcrumb'>
-			{['Categoria 1', 'Categoria 2']?.join(' > ')}
+			{ categories && categories?.join(' > ')}
 		</h1>
 	)
 }

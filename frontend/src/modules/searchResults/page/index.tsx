@@ -10,7 +10,7 @@ export const SearchResults = () => {
 	const queryParams = new URLSearchParams(location.search)
 	const searchQuery = queryParams.get('search')
 
-	const { itemsByQueryParams, loading, errors, getAllItems } =
+	const { items, loading, errors, getAllItems } =
 		useSearchStore()
 
 	const navigate = useNavigate()
@@ -26,13 +26,13 @@ export const SearchResults = () => {
 	}
 
 	if (loading) return <div>Cargando...</div>
-	if (errors?.itemsByQueryParams)
-		return <div>Error: {errors.itemsByQueryParams.message}</div>
+	if (errors?.items)
+		return <div>Error: {errors.items.message}</div>
 
 	return (
 		
 			<section className='main-layout__container'>
-				{itemsByQueryParams.items?.map((item) => (
+				{items?.map((item) => (
 					<Item
 						key={item.id}
 						info={item}

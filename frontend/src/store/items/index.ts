@@ -1,6 +1,6 @@
 import { IAuthor } from '@/contracts/types/backend/author/main'
 import { ICustomizedErrors } from '@/contracts/types/backend/errors'
-import { IItemDetail, IItemDetailsByIdResponse, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items'
+import { IItemDetail, IItemDetailsByIdResponse, IItemFromQueryParams, IItemsByQueryParamsResponse } from '@/contracts/types/backend/items'
 import { SearchStoreState, SearchStoreValues } from '@/contracts/types/store'
 import ItemsRepository from '@/services'
 import { isAxiosError } from 'axios'
@@ -8,7 +8,7 @@ import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export const initialState: SearchStoreValues = {
-	itemsByQueryParams: {} as IItemsByQueryParamsResponse,
+	items: [] as IItemFromQueryParams[],
 	item: {} as IItemDetail,
 	signature: { name: 'Undefined', lastname: 'Undefined' } as IAuthor,
 	loading: false,
@@ -22,7 +22,7 @@ export const useSearchStore = create<SearchStoreState>()(
 				...initialState,
 				getAllItems: async (searchQuery: string) => {
 					try {
-						set({ loading: true, errors: undefined })
+						set({ loading: true, errors: undefined, categories: [] })
 						const itemsRepository = new ItemsRepository()
 						const result: IItemsByQueryParamsResponse =
 							await itemsRepository.getItemsByQueryParam(
@@ -31,7 +31,8 @@ export const useSearchStore = create<SearchStoreState>()(
 
 						set((state) => ({
 							...state,
-							itemsByQueryParams: result,
+							categories: result.categories,
+							itemsByQueryParams: result.items,
 							signature: result.author,
 							loading: false
 						}))
