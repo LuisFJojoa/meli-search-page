@@ -17,13 +17,13 @@ export const Item = ({ info }: ItemProps) => {
 					<section className='item__info-container__header'>
 						<section className='item__info-container__header__detail'>
 							<p className='item__info-container__header__detail__price'>
-								$ {price?.amount} ({price?.currency})
+								$ {price?.amount}
 							</p>
 							{free_shipping && (
 								<img
 									src={freeShippingIcon}
 									alt='searh-icon'
-									className='item__search-container__icon-container__icon'
+									className='item__info-container__header__detail__icon'
 								/>
 							)}
 						</section>
@@ -34,7 +34,7 @@ export const Item = ({ info }: ItemProps) => {
 						</section>
 					</section>
 					<section className='item__info-container__description'>
-						<p className='item__info-container__header__description__value'>
+						<p className='item__info-container__description__value'>
 							{title}
 						</p>
 					</section>
