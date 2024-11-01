@@ -19,9 +19,10 @@
     @include flex(center, center);
     margin: 0 $padding-sm 0 0;
     position: relative;
-
-
+    
+    
     &__image {
+      object-fit: contain;
       width: 18rem;
       height: 18rem;
       border-radius: 0.4rem;

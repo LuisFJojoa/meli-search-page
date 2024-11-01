@@ -1,5 +1,6 @@
 @use '../styles/variables' as *;
 @use '../styles/mixins' as *;
+
 .main-layout {
   max-width: 1000px;
   @include flex(flex-start, flex-start);
@@ -19,7 +20,11 @@
     background-color: $white;
     border-radius: 0.4rem;
     margin: 0;
+    min-height: 80rem;
     box-shadow: $light-white 0px 8px 24px;
-    padding: 0 $padding-sm 0 $padding-sm;
+
+    &__items {
+      padding: 0 $padding-sm 0 $padding-sm;
+    }
   }
 }

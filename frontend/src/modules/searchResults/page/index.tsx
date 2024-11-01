@@ -27,7 +27,7 @@ export const SearchResults = () => {
 	if (errors?.items) return <div>Error: {errors.items.message}</div>
 
 	return (
-		<>
+		<section className='main-layout__container__items'>
 			{items?.map((item) => (
 				<Item
 					key={item.id}
@@ -35,6 +35,6 @@ export const SearchResults = () => {
 					navigateToItemDetails={handleItemDatailsNavigation}
 				/>
 			))}
-		</>
+		</section>
 	)
 }
