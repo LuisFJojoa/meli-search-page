@@ -103,6 +103,7 @@ export const getItemDetails = async (
   const id = req.params.id;
   try {
     let item: IItemDetail = {} as IItemDetail;
+   
     try {
       const itemResponse: AxiosResponse<Result> = await axios.get(`${ENDPOINTS.itemDetail}${id}`);
       item = mapItemFromMeliApiToItem(itemResponse.data);
@@ -118,8 +119,8 @@ export const getItemDetails = async (
       const descriptionResponse: AxiosResponse<IItemDescriptionFromMeliResponse> = await axios.get(`${ENDPOINTS.itemDetail}${id}${ENDPOINTS.itemDescription}`);
       item.description = descriptionResponse.data.plain_text;
     } catch (error) {
-      if (error instanceof CustomError) {
-        throw new CustomError(CustomizedErrors.item.description);
+      if (error instanceof CustomError || isAxiosError(error)) {
+        item.description = "Este producto no tiene descripción.";
       } else if (error instanceof Error) {
         throw new CustomError(CustomizedErrors.internal.server, HTTP_SATUS_CODE.INTERNAL_SERVER_ERROR);
       }
