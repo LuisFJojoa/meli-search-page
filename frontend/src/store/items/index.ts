@@ -8,7 +8,7 @@ import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export const initialState: SearchStoreValues = {
-	items: [],
+	itemsByQueryParams: {} as IItemsByQueryParamsResponse,
 	item: {} as IItemDetail,
 	signature: { name: 'Undefined', lastname: 'Undefined' } as IAuthor,
 	loading: false,
@@ -31,7 +31,7 @@ export const useSearchStore = create<SearchStoreState>()(
 
 						set((state) => ({
 							...state,
-							items: result.items,
+							itemsByQueryParams: result,
 							signature: result.author,
 							loading: false
 						}))

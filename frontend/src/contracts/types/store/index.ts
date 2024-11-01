@@ -1,14 +1,14 @@
 import { IAuthor } from '../backend/author/main'
 import { ICustomizedErrors } from '../backend/errors'
-import { IItemDetail, IItemFromQueryParams } from '../backend/items'
+import { IItemDetail, IItemsByQueryParamsResponse } from '../backend/items'
 
 interface IErrors {
-	items?: ICustomizedErrors
+	itemsByQueryParams?: ICustomizedErrors
 	item?: ICustomizedErrors
 	signature?: IAuthor
 }
 export interface SearchStoreValues {
-	items: IItemFromQueryParams[]
+	itemsByQueryParams: Partial<IItemsByQueryParamsResponse>
 	item: IItemDetail
 	signature: IAuthor
 	loading: boolean

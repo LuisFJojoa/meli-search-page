@@ -7,7 +7,8 @@ export const SearchResults = () => {
 	const queryParams = new URLSearchParams(location.search)
 	const searchQuery = queryParams.get('search')
 
-	const { items, loading, errors, getAllItems } = useSearchStore()
+	const { itemsByQueryParams, loading, errors, getAllItems } =
+		useSearchStore()
 
 	useEffect(() => {
 		if (searchQuery) {
@@ -16,16 +17,21 @@ export const SearchResults = () => {
 	}, [searchQuery, getAllItems])
 
 	if (loading) return <div>Cargando...</div>
-	if (errors?.items) return <div>Error: {errors.items.message}</div>
+	if (errors?.itemsByQueryParams)
+		return <div>Error: {errors.itemsByQueryParams.message}</div>
 
 	return (
-		<div>
-			<h2>Resultados para: {searchQuery}</h2>
+		<section>
+			<h1>{itemsByQueryParams.categories}</h1>
 			<ul>
-				{items.map((item) => (
-					<li key={item.id}>{item.title}</li>
+				{itemsByQueryParams.items?.map((item) => (
+					<>
+						<li key={item.id}>{item.title}</li>
+						<li key={item.id}>{item.price.amount}</li>
+						<li key={item.id}>{item.free_shipping ? 'true': 'false'}</li>
+					</>
 				))}
 			</ul>
-		</div>
+		</section>
 	)
 }
