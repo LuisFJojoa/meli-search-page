@@ -10,7 +10,7 @@
   padding: 1rem 0;
 
   &__content {
-    @include flex(center, space-around);
+    @include flex(center, space-between);
     max-width: 1000px;
     width: 100%;
     background-color: inherit;
@@ -35,14 +35,16 @@
     &__search-container {
       position: relative;
       @include flex-center;
+      align-self: flex-end;
       width: 90%;
       background-color: inherit;
+      margin: 0;
 
       &__input {
         width: 100%;
         padding: $padding-sm;
         border: none;
-        color: $light-gray;
+        color: $dark-gray;
         background-color: $white;
         font-size: $font-size-lg;
         border-radius: 0.4rem 0 0 0.4rem;
