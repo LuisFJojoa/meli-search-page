@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSearchStore } from '@/store/items'
 import { Item } from '../components/item'
 import './searchResultPage.scss'
+import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 
 export const SearchResults = () => {
 	const location = useLocation()
@@ -12,11 +13,17 @@ export const SearchResults = () => {
 	const { itemsByQueryParams, loading, errors, getAllItems } =
 		useSearchStore()
 
+	const navigate = useNavigate()
+
 	useEffect(() => {
 		if (searchQuery) {
 			getAllItems(searchQuery as string)
 		}
 	}, [searchQuery, getAllItems])
+
+	const handleItemDatailsNavigation = (itemId: string) => {
+		navigate(NAVIGATION_PATHS.ITEM.GET_DETAIL(itemId))
+	}
 
 	if (loading) return <div>Cargando...</div>
 	if (errors?.itemsByQueryParams)
@@ -24,9 +31,17 @@ export const SearchResults = () => {
 
 	return (
 		<section className='search-results-page'>
-			<h1 className='search-results-page__breadcrumb'>{itemsByQueryParams.categories}</h1>
+			<h1 className='search-results-page__breadcrumb'>
+				{itemsByQueryParams.categories}
+			</h1>
 			<section className='search-results-page__container'>
-				{itemsByQueryParams.items?.map((item) => <Item info={item} />)}
+				{itemsByQueryParams.items?.map((item) => (
+					<Item
+						key={item.id}
+						info={item}
+						navigateToItemDetails={handleItemDatailsNavigation}
+					/>
+				))}
 			</section>
 		</section>
 	)
