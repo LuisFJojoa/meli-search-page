@@ -10,22 +10,24 @@
   padding: 1rem 0;
 
   &__content {
-    @include flex(center, space-between);
-    flex-grow: 1;
+    @include flex(center, space-around);
     max-width: 1000px;
+    width: 100%;
     background-color: inherit;
 
     &__logo-container {
       @include flex(center, flex-start);
       background-color: inherit;
-      width: 9rem;
+      width: 7rem;
       height: 5rem;
+      padding: 0;
+      margin: 0;
 
       &__logo {
         background-color: inherit;
+        aspect-ratio: 16/9;
         width: 100%;
         height: 100%;
-        aspect-ratio: 16/9;
         object-fit: contain;
       }
     }

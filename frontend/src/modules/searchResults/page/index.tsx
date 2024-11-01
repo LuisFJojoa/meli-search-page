@@ -24,11 +24,7 @@ export const SearchResults = () => {
 	return (
 		<section>
 			<h1>{itemsByQueryParams.categories}</h1>
-			<ul>
-				{itemsByQueryParams.items?.map((item) => (
-					<Item info={item}/>
-				))}
-			</ul>
+			{itemsByQueryParams.items?.map((item) => <Item info={item} />)}
 		</section>
 	)
 }
