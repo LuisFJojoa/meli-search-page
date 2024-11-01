@@ -1,3 +1,4 @@
+import { formattedNumber } from '@/services'
 import { ItemDetailsProps } from '../interfaces'
 import './itemDetails.scss'
 
@@ -23,7 +24,7 @@ export const ItemDetails = ({ details }: ItemDetailsProps) => {
 						{title}
 					</p>
 					<p className='item-details__info-container__header__details__price'>
-						$ {price?.amount}
+						$ {formattedNumber(price?.amount || 0)}
 						<sup>{price?.decimals}</sup>
 					</p>
 					<section className='item-details__info-container__header__details__action'>
