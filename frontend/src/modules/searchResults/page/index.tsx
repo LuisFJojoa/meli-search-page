@@ -4,6 +4,8 @@ import { useSearchStore } from '@/store/items'
 import { Item } from '../components/item'
 import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 import { Loading } from '@/components/loading'
+import { NotFound } from '@/components/notFound'
+import { moveScrollTo } from '@/utils'
 
 export const SearchResults = () => {
 	const location = useLocation()
@@ -17,6 +19,7 @@ export const SearchResults = () => {
 	useEffect(() => {
 		if (searchQuery) {
 			getAllItems(searchQuery as string)
+			moveScrollTo()
 		}
 	}, [searchQuery, getAllItems])
 
@@ -25,7 +28,7 @@ export const SearchResults = () => {
 	}
 
 	if (loading) return <Loading/>
-	if (errors?.items) return <div>Error: {errors.items.message}</div>
+	if (errors?.items) return <NotFound/>
 
 	return (
 		<section className='main-layout__container__items'>

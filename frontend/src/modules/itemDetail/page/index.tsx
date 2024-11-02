@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { ItemDetails } from '../components/itemDetails'
 import { Loading } from '@/components/loading'
 import { moveScrollTo } from '@/utils'
+import { NotFound } from '@/components/notFound'
 
 export const ItemDetail = () => {
 	const { id } = useParams()
@@ -16,7 +17,7 @@ export const ItemDetail = () => {
 	}, [id, getItemDetails])
 
 	if (loading) return <Loading />
-	if (errors?.items) return <div>Error: {errors.items.message}</div>
+	if (errors?.items) return <NotFound/>
 
 	return <ItemDetails details={{ ...item }} />
 }

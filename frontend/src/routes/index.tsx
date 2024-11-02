@@ -11,7 +11,7 @@ export default function AppRoutes(): ReactElement {
 	return (
 		<Router>
 				<Routes>
-					<Route path='*' element={<NotFound/>} />
+					<Route path='*' element={<NotFound isCustomSize={true}/>} />
 					<Route path='/' element={<MainLayout />}>
 						<Route path='' element={<HomePage />} index />
 						<Route path='items' element={<ItemLayout />}>

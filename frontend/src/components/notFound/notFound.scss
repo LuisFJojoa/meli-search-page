@@ -1,10 +1,14 @@
 @use '../../styles/mixins' as *;
 @use '../../styles/variables' as *;
+
 .not-found {
   @include flex-center;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
+
+  &__custom-sizes {
+    width: 100vw;
+    height: 100vh;
+  }
 
   &__logo-container {
     width: 15rem;
@@ -16,13 +20,13 @@
       height: 100%;
     }
 
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
   }
 
-  &__description{
-    font-size: $font-size-2xl;
+  &__description {
+    font-size: $font-size-xl;
     color: $medium-gray;
   }
 
