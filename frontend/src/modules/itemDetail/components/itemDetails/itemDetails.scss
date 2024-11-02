@@ -6,6 +6,7 @@
   @include flex-center;
   flex-direction: column;
   margin: 0;
+  padding-right: $padding-lg;
 
   &__info-container__header {
     width: 100%;
@@ -59,7 +60,101 @@
           line-height: $font-size-4xl;
 
         }
+
+        &__action {
+
+          & button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+            color: black;
+            border-radius: 6px;
+            font-size: 1.4rem;
+            font-style: normal;
+            font-weight: 400;
+            width: auto;
+            transition: all ease-in-out 300ms;
+
+            &:hover {
+              border-color: transparent;
+            }
+
+            &[disabled]:hover {
+              box-shadow: none;
+            }
+
+            &[disabled] {
+              opacity: 0.8;
+              cursor: not-allowed;
+            }
+          }
+        }
+
+        &__action {
+
+          & button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+            color: black;
+            border-radius: 6px;
+            font-size: 1.4rem;
+            font-style: normal;
+            font-weight: 400;
+            width: auto;
+            transition: all ease-in-out 300ms;
+
+            &:hover {
+              border-color: transparent;
+            }
+
+            &[disabled]:hover {
+              box-shadow: none;
+            }
+
+            &[disabled] {
+              opacity: 0.8;
+              cursor: not-allowed;
+            }
+          }
+        }
       }
+
+      &__action {
+        width: 100%;
+
+        & button {
+          @include flex-center;
+          width: 100%;
+          padding: 1rem;
+          border: 1px solid transparent;
+          cursor: pointer;
+          background-color: $primary-blue;
+          color: $white;
+          border-radius: 0.4rem;
+          font-size: 1.4rem;
+          font-style: normal;
+          font-weight: 400;
+          transition: all ease-in-out 300ms;
+
+          &:hover {
+            border: 1px solid $primary-blue;
+            color: $primary-blue;
+            background-color: inherit;
+          }
+        }
+      }
+
 
 
     }
@@ -73,12 +168,12 @@
     margin: 0;
     padding-left: $padding-lg;
 
-    &__title{
+    &__title {
       margin: 0;
       font-size: $font-size-3xl;
     }
 
-    &__value{
+    &__value {
       width: 80%;
       margin: 0;
       padding-bottom: $padding-lg;
