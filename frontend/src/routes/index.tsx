@@ -1,35 +1,17 @@
-import { Loading } from '@/components/loading'
+import { NotFound } from '@/components/notFound'
+import { ItemLayout } from '@/layouts/item/itemLayout'
+import { MainLayout } from '@/layouts/main/mainLayout'
 import { HomePage } from '@/modules/home/page'
-import { ReactElement, Suspense, lazy } from 'react'
+import { ItemDetail } from '@/modules/itemDetail/page'
+import { SearchResults } from '@/modules/searchResults/page'
+import { ReactElement } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-
-const ItemLayout = lazy(() =>
-	import('@/layouts/item/itemLayout').then((module) => ({
-		default: module.ItemLayout
-	}))
-)
-const MainLayout = lazy(() =>
-	import('@/layouts/main/mainLayout').then((module) => ({
-		default: module.MainLayout
-	}))
-)
-const ItemDetail = lazy(() =>
-	import('@/modules/itemDetail/page').then((module) => ({
-		default: module.ItemDetail
-	}))
-)
-const SearchResults = lazy(() =>
-	import('@/modules/searchResults/page').then((module) => ({
-		default: module.SearchResults
-	}))
-)
 
 export default function AppRoutes(): ReactElement {
 	return (
 		<Router>
-			<Suspense fallback={<Loading />}>
 				<Routes>
-					<Route path='*' element={<>Page not found</>} />
+					<Route path='*' element={<NotFound/>} />
 					<Route path='/' element={<MainLayout />}>
 						<Route path='' element={<HomePage />} index />
 						<Route path='items' element={<ItemLayout />}>
@@ -38,7 +20,6 @@ export default function AppRoutes(): ReactElement {
 						</Route>
 					</Route>
 				</Routes>
-			</Suspense>
 		</Router>
 	)
 }
