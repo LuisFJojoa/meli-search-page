@@ -1,4 +1,5 @@
-import { SearchLayout } from '@/layouts/searchLayout'
+import { ItemLayout } from '@/layouts/item/itemLayout'
+import { MainLayout } from '@/layouts/main/mainLayout'
 import { ItemDetail } from '@/modules/itemDetail/page'
 import { SearchResults } from '@/modules/searchResults/page'
 import { ReactElement } from 'react'
@@ -9,9 +10,9 @@ export default function AppRoutes(): ReactElement {
 		<Router>
 			<Routes>
 				<Route path='*' element={<>Page not found</>} />
-				<Route path='/' element={<SearchLayout />}>
+				<Route path='/' element={<MainLayout />}>
 					<Route path='' element={<>Home</>} index />
-					<Route path='items'>
+					<Route path='items' element={<ItemLayout/>}>
 						<Route element={<SearchResults />} index />
 						<Route element={<ItemDetail />} path=':id' />
 					</Route>

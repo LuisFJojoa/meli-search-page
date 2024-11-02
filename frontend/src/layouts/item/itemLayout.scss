@@ -1,0 +1,14 @@
+@use '../../styles/variables' as *;
+
+.main-layout__container {
+  width: 100%;
+  background-color: $white;
+  border-radius: 0.4rem;
+  margin: 0;
+  min-height: 80rem;
+  box-shadow: $light-white 0px 8px 24px;
+
+  &__items {
+    padding: 0 $padding-sm 0 $padding-sm;
+  }
+}
