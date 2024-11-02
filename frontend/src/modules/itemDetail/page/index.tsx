@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { ItemDetails } from '../components/itemDetails'
 import { Loading } from '@/components/loading'
+import { moveScrollTo } from '@/utils'
 
 export const ItemDetail = () => {
 	const { id } = useParams()
@@ -10,6 +11,7 @@ export const ItemDetail = () => {
 	useEffect(() => {
 		if (id) {
 			getItemDetails(id)
+			moveScrollTo()
 		}
 	}, [id, getItemDetails])
 
