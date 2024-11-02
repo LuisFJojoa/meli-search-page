@@ -8,7 +8,7 @@ export const mapItemFromMeliApiToItem = (result: Result): IItemDetail => {
     title: title,
     price: {
       currency: currency_id,
-      amount: price,
+      amount: Math.round(price),
       decimals: Math.round((price % 1) * 100)
     },
     picture: thumbnail,
@@ -27,7 +27,7 @@ export const mapItemsFromMeliApiToItem = (results: Result[]): IItemFromQueryPara
       title,
       price: {
         currency: currency_id,
-        amount: Math.floor(price),
+        amount: Math.round(price),
         decimals: Math.round((price % 1) * 100),
       },
       picture: thumbnail,

@@ -1,4 +1,4 @@
-import { formattedNumber } from '@/services'
+import { formattedNumberWithUnits } from '@/utils'
 import { ItemProps } from '../../interfaces'
 import './item.scss'
 import freeShippingIcon from '@/assets/icons/ic_shipping.png'
@@ -18,7 +18,7 @@ export const Item = ({ info, navigateToItemDetails }: ItemProps) => {
 				<section className='item__info-container__header'>
 					<section className='item__info-container__header__detail'>
 						<p className='item__info-container__header__detail__price'>
-							$ {formattedNumber(price?.amount || 0)}
+							$ {formattedNumberWithUnits(price?.amount as number)}
 						</p>
 						{free_shipping && (
 							<img

@@ -1,4 +1,4 @@
-import { formattedNumber } from '@/services'
+import { formattedDecimal, formattedNumberWithUnits } from '@/utils'
 import { ItemDetailsProps } from '../interfaces'
 import './itemDetails.scss'
 
@@ -24,8 +24,8 @@ export const ItemDetails = ({ details }: ItemDetailsProps) => {
 						{title}
 					</p>
 					<p className='item-details__info-container__header__details__price'>
-						$ {formattedNumber(price?.amount || 0)}
-						<sup>{price?.decimals}</sup>
+						$ {formattedNumberWithUnits(price?.amount as number)}
+						<sup>{formattedDecimal(price?.decimals as number)}</sup>
 					</p>
 					<section className='item-details__info-container__header__details__action'>
 						<button type='button'>Comprar</button>
@@ -33,7 +33,9 @@ export const ItemDetails = ({ details }: ItemDetailsProps) => {
 				</section>
 			</section>
 			<section className='item-details__info-container__description'>
-				<h2 className='item-details__info-container__description__title'>Descripción del producto</h2>
+				<h2 className='item-details__info-container__description__title'>
+					Descripción del producto
+				</h2>
 				<p className='item-details__info-container__description__value'>
 					{description}
 				</p>

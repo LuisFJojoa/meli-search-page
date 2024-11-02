@@ -1,1 +1,0 @@
-export const formattedNumber = (number: number) => new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(number);
