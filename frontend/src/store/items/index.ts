@@ -62,12 +62,12 @@ export const useSearchStore = create<SearchStoreState>()(
 
 						set((state) => (
 							{
-							...state,
-							categories: Array.from(new Set([...(state.categories || []), ...(result?.item?.categories || [])])),
-							item: result.item,
-							signature: result.author,
-							loading: false
-						}))
+								...state,
+								categories: Array.from(new Set([...(state.categories || []), ...(result?.item?.categories || [])])),
+								item: result.item,
+								signature: result.author,
+								loading: false
+							}))
 					} catch (error) {
 
 						if (isAxiosError(error)) {
@@ -89,6 +89,7 @@ export const useSearchStore = create<SearchStoreState>()(
 						...state,
 						errors: undefined
 					})),
+				clearCategories: () => set({ categories: [] }),
 				setError: (error) => {
 					if (isAxiosError(error)) {
 						const errorContent = error.response?.data

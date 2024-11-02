@@ -23,6 +23,7 @@ export interface SearchStoreActions {
 	getAllItems: (searchQuery: string) => void
 	setLoading: (value: boolean) => void
 	clearErrors: () => void
+	clearCategories: () => void
 	setError: (key: string, value: string) => void
 }
 
