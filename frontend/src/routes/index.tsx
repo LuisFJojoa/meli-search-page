@@ -1,4 +1,5 @@
 import { Loading } from '@/components/loading'
+import { HomePage } from '@/modules/home/page'
 import { ReactElement, Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
@@ -30,7 +31,7 @@ export default function AppRoutes(): ReactElement {
 				<Routes>
 					<Route path='*' element={<>Page not found</>} />
 					<Route path='/' element={<MainLayout />}>
-						<Route path='' element={<>Home</>} index />
+						<Route path='' element={<HomePage />} index />
 						<Route path='items' element={<ItemLayout />}>
 							<Route element={<SearchResults />} index />
 							<Route element={<ItemDetail />} path=':id' />
