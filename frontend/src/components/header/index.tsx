@@ -1,12 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import searchIcon from '@/assets/icons/ic_Search.png'
 import logoIcon from '@/assets/icons/Logo_ML.png'
 import './header.scss'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 
 export const Header = () => {
 	const [searchTerm, setSearchTerm] = useState('')
+	const { pathname } = useLocation()
+
+	useEffect(() => {
+		if (pathname === '/') {
+			setSearchTerm('')
+		}
+	}, [pathname])
 
 	const navigate = useNavigate()
 
