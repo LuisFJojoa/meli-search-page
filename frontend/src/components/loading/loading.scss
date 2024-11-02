@@ -1,0 +1,12 @@
+@use '../../styles/mixins' as *;
+
+.loading-container {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  flex-direction: column;
+  z-index: 1000; 
+}
