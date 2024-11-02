@@ -65,8 +65,6 @@ export const getAllItems = async (
       ) || [];
 
       itemsByQueryParams.categories = categories.length !== 0 ? categories : [mostCommonCategory.name];
-
-
     } else {
 
       if (Object.keys(filters).length !== 0) {
@@ -82,8 +80,8 @@ export const getAllItems = async (
     res.json({
       data: itemsByQueryParams
     });
-  } catch (error) {
-    if (items) {
+  } catch (error) {    
+    if (items.length === 0) {
       console.error({ error: 'Error fetching categories to render breadcrumb: ' + (error || 'Unknown error') });
     } else {
       next(error);
