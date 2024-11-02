@@ -30,6 +30,10 @@
         height: 100%;
         object-fit: contain;
       }
+
+      &:hover{
+        cursor: pointer;
+      }
     }
 
     &__search-container {

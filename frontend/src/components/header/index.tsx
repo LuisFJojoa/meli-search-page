@@ -8,7 +8,7 @@ import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
 export const Header = () => {
 	const [searchTerm, setSearchTerm] = useState('')
 
-	const navigate = useNavigate();
+	const navigate = useNavigate()
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target
@@ -18,9 +18,8 @@ export const Header = () => {
 	const handleSearch = () => {
 		if (searchTerm !== '') {
 			navigate(NAVIGATION_PATHS.ITEM.GET_ALL(searchTerm))
-		} else{
-			console.log('No se ha escrito nada');
-			
+		} else {
+			console.log('No se ha escrito nada')
 		}
 	}
 
@@ -28,6 +27,10 @@ export const Header = () => {
 		if (event.key === 'Enter') {
 			handleSearch()
 		}
+	}
+
+	const handleHomeRedirect = () => {
+		navigate('/')
 	}
 
 	return (
@@ -38,6 +41,7 @@ export const Header = () => {
 						src={logoIcon}
 						alt='logo-icon'
 						className='header__content__logo-container__logo'
+						onClick={handleHomeRedirect}
 					/>
 				</section>
 				<section className='header__content__search-container'>
@@ -63,4 +67,3 @@ export const Header = () => {
 		</header>
 	)
 }
-
