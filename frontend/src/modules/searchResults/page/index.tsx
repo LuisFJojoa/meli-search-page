@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSearchStore } from '@/store/items'
 import { Item } from '../components/item'
 import { NAVIGATION_PATHS } from '@/consts/endpoints/intdex'
+import { Loading } from '@/components/loading'
 
 export const SearchResults = () => {
 	const location = useLocation()
@@ -23,7 +24,7 @@ export const SearchResults = () => {
 		navigate(NAVIGATION_PATHS.ITEM.GET_DETAIL(itemId))
 	}
 
-	if (loading) return <div>Cargando...</div>
+	if (loading) return <Loading/>
 	if (errors?.items) return <div>Error: {errors.items.message}</div>
 
 	return (
